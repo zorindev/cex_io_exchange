@@ -1,0 +1,6 @@
+mkvirtualenv socketio-py2
+pip install -r requirements.txt
+
+# create some newrelic.ini in the same dir
+NEW_RELIC_CONFIG_FILE=newrelic.ini NEW_RELIC_ENVIRONMENT=socketio-py2 newrelic-admin run-program python app.py
+

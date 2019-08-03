@@ -1,0 +1,217 @@
+	{% extends "layout.html" %}
+    {% block body %}
+    
+    
+	<div class="application" id="application" >
+	    <h1>EX trigger app </h1>
+	        <div class="trade_manager" >
+	            <form id="trade_manager_form" name="trade_manager_form" >
+	                <span>
+	                    <input type="button" id="add_client" name="add_client" value="add_client" />
+	                </span>
+	            </form>
+	        </div>
+	</div>  
+	
+	
+	<script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+        	
+        	
+            function getGuid() {
+           		function s4() {
+            	    return Math.floor((1 + Math.random()) * 0x10000)
+            	      .toString(16)
+            	      .substring(1);
+           		};
+            	return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
+           	};
+            
+            
+            var worker_socket = null;
+            var trade_container_id_index = 0;
+            var sessions = new Array();
+            var invsessions = new Array();
+            var trade_states = new Array();
+            var namespace = "/ex";
+            sessions[0] = "";
+            
+            
+            worker_socket = io.connect(
+            	location.protocol       + 
+                '//'                    + 
+                document.domain         + 
+                ':'                     +    
+                location.port           + 
+                namespace               ,
+                {'force new connection': true}
+            );
+            
+            
+            
+            worker_socket.on("re_trigger", function(msg) {
+                $("#console_" + msg.id).append(msg.id + " - " + msg.state_message + "<br />");
+            });
+            
+            worker_socket.on("ex_notification", function(msg) {
+                console.log(msg.id);
+                $("#console_" + msg.id).append(msg.msg + "<br />");
+                    
+                var d =$("#console_" + msg.id);
+                d.scrollTop(d.prop("scrollHeight"));
+            });
+            
+            worker_socket.on("re_stop_trade", function(msg) {
+            	console.log("stopped");
+            	$("#console_" + msg.id).append(msg.id + " - " + msg.state_message + " <br />");
+            });
+            
+  
+            $("#trade_manager_form").on("click", "#add_client", function() {
+                
+            	var guid = getGuid();
+            	
+                trade_container_id_index += 1;
+                //trade_container_id_index += guid;
+                
+                console.log(trade_container_id_index);
+                
+                $("#application").append(
+                    "<div class='trade_app_container' id='trade_app_container_" + trade_container_id_index + "_" + guid + "'>" +
+                    "<ul id='feedback_ul_" + trade_container_id_index + "' >" +
+                    "<li>" +
+                    "<div class='feedback_var exchange_and_market' id='exchange_and_market_" + trade_container_id_index + "_" + guid + "'>EXCHANGE AND MARKET</div>" +
+                    "</li>" +
+                    "<li>" +
+                    "<div class='feedback_var order_count' id='order_count_" + trade_container_id_index + "_" + guid + "'>ORDER COUNT</div>" +
+                    "</li>" +
+                    "<li>" +
+                    "<div class='feedback_var profit' id='profit_'" + trade_container_id_index + "_" + guid + ">PROFIT</div>" +
+                    "</li>" +
+                    "</ul>" +
+                    "<div class='clear'></div>" +
+                    "<div class='ctrl' id='ctrl_" + trade_container_id_index + "_" + guid + "'>" +
+                    "<form name='ctrl_form' id='ctrl_forms_" + trade_container_id_index + "_" + guid + "'>" +
+                    "<span>" +
+                    "<input type='button' name='trigger_trade' value='run trade' id='button_trigger_" + trade_container_id_index + "_" + guid + "'/>" +
+                    "<input type='button' name='stop_trade' value='stop trade' id='button_stop_" + trade_container_id_index + "_" + guid + "'/>" +
+                    "<input type='button' name='close' value='close' id='button_close_" + trade_container_id_index + "_" + guid + "'/>" +
+                    "</span>" +
+                    "<span>" +
+                    
+                    "<div class='input_params' >" +
+                    
+                    "<label for='client_id' >ClientID</label>" +
+                    "<input type='text' name='client_id' id='client_id_" + trade_container_id_index + "_" + guid + "' value='jSNiRrzNOpTmEde6vFap' /></br>" +
+                    
+                    "<label for='exchange' >Exchange</label>" +
+                    "<input type='text' name='exchange' id='exchange_" + trade_container_id_index + "_" + guid + "' value='cex.io' /> </br>" +
+                    
+                    "<label for='market' >Market</label>" +
+                    "<input type='text' name='market' id='market_" + trade_container_id_index + "_" + guid + "' value='XRP/USD' /> </br>" +
+                    
+                    "<label for='username' >Username</label>" +
+                    "<input type='text' name='username' id='username_" + trade_container_id_index + "_" + guid + "' value='zorindev' /> </br>" +
+                    
+                    "<label for='api_key' >API Key</label>" +
+                    "<input type='text' name='api_key' id='api_key_" + trade_container_id_index + "_" + guid + "' value='ftRd4H1bMepgx7WsjRYLlOznZM' /> </br>" +
+                    
+                    "<label for='secret' >API Secret</label>" +
+                    "<input type='text' name='api_secret' id='api_secret_" + trade_container_id_index + "_" + guid + "' value='915d8lx92ocbn9jtlTkz2zlkuuk' /> </br>" +
+                    
+                    "<label for='lower_margin' >Lower Margin</label>" +
+                    "<input type='text' name='lower_margin' id='lower_margin_" + trade_container_id_index + "_" + guid + "' value='25' /> </br>" +
+                    
+                    "<label for='upper_margin' >Upper Margin</label>" +
+                    "<input type='text' name='upper_margin' id='upper_margin_" + trade_container_id_index + "_" + guid + "' value='75' /> </br>" +
+                    
+                    "<label for='profit_margin' >Margin Profit</label>" +
+                    "<input type='text' name='profit_margin' id='profit_margin_" + trade_container_id_index + "_" + guid + "' value='1.1' /> </br>" +
+                    
+                    "<label for='min_trade_amount' >Minimum Trade Amount</label>" +
+                    "<input type='text' name='min_trade_amount' id='min_trade_amount_" + trade_container_id_index + "_" + guid + "' value='10' /> </br>" +
+                    
+                    "<label for='number_of_levels' >Number of related orders</label>" +
+                    "<input type='text' name='number_of_levels' id='number_of_levels_" + trade_container_id_index + "_" + guid + "' value='1' /> </br>" +
+                    
+                    "<label for='level_margin' >Level margin</label>" +
+                    "<input type='text' name='level_margin' id='level_margin_" + trade_container_id_index + "_" + guid + "' value='0.2' /> </br>" +
+                    
+                    "</div>" +
+                    
+                    "<div class='clear' />'" +
+                    
+                    "</span>" +
+                    "</form>" +
+                    "</div>" +
+                    "<div class='console' id='console_" + trade_container_id_index + "_" + guid + "'>" +
+                    "</div>" +
+                    "</div>"
+                );
+            });
+            
+            $("#application").off("click");
+            $("#application").on("click", "[name='trigger_trade']", function(evt) {
+
+                var id = ($(this).attr("id").split("_"))[($(this).attr("id").split("_")).length - 2] + 
+                			"_" + ($(this).attr("id").split("_"))[($(this).attr("id").split("_")).length - 1];
+                sessions.push(id);
+                
+                
+				var data = Array();
+				data.push(
+					$("input#client_id_" + id).val(),
+					$("input#exchange_" + id).val(),
+					$("input#market_" + id).val(),
+					$("input#username_" + id).val(),
+					$("input#api_key_" + id).val(),
+					$("input#api_secret_" + id).val(),
+					$("input#lower_margin_" + id).val(),
+					$("input#upper_margin_" + id).val(),
+					$("input#profit_margin_" + id).val(),
+					$("input#min_trade_amount_" + id).val(),
+					$("input#number_of_levels_" + id).val(),
+					$("input#level_margin_" + id).val(),
+				);
+				
+				worker_socket.emit("trigger", {'id': id, 'data': data});
+            });
+            
+            
+            $("#application").on("click", "[name='stop_trade']", function() {
+            	var id = ($(this).attr("id").split("_"))[($(this).attr("id").split("_")).length - 2] + 
+    						"_" + ($(this).attr("id").split("_"))[($(this).attr("id").split("_")).length - 1];
+                
+                console.log("calling stop");
+                worker_socket.emit("stop_trade", {'id': id});
+                                    
+            });
+            
+            
+            
+            $(window).unload(function() {
+            	console.log("logging ... ");
+            	$.each(sessions, function(id, value) {
+             		if(id > 0) {
+            			console.log("calling stop with id " + id);
+                    	worker_socket.emit("stop_trade", {'id': sessions[id]});
+            		}
+            	});
+            });
+            
+                        
+            $("#application").on("click", "[name='close']", function() {
+               
+                var id =($(this).attr("id").split("_"))[($(this).attr("id").split("_")).length - 2] + 
+    			"_" + ($(this).attr("id").split("_"))[($(this).attr("id").split("_")).length - 1];
+                
+                worker_socket.emit("stop_trade", {'id': id});
+                delete sessions[id];
+                $("#trade_app_container_" + id).remove();
+            });
+            
+        });
+        
+    </script>
+
+    {% endblock %}

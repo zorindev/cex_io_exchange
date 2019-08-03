@@ -1,0 +1,81 @@
+
+#application {
+    /*width: 1333px;
+    height: 1200px;
+    white-space: nowrap;
+    position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;*/
+}
+
+div.trade_app_container {
+    border: 1px solid #d0d0d0;
+    padding: 1px 2px 3px 4px;
+    width: 1200px;
+    float: none;
+    height: 719px;
+    margin: 12px 6px 5px 0px;
+    /*display: inline-block;
+    zoom: 1;*/
+}
+
+div.trade_app_container ul {
+    margin: 0; padding: 0;
+}
+
+div.trade_app_container ul  li {
+    list-style-type: none;
+    margin: 0; padding: 0;
+    float: left
+}
+
+div.feedback_var {
+    text-align: center;
+    float: left;
+    margin: 1px 2px 3px 4px;
+}
+
+div.clear {
+    float: none;
+    clear: both;
+    height: 1px;
+}
+
+div.console {
+    border:		1px solid black;
+	width:		1177px;
+	height:		300px;
+    margin:     12px 0px 0px 0px;
+    overflow:   auto
+}
+
+form span {
+    display: block;
+    margin: 12px 0px 0px 0px;
+}
+
+textarea#forminput {
+    width: 700px;
+    height: 100px;
+}
+
+
+label {
+    width:180px;
+    clear:left;
+    text-align:right;
+    padding-right:10px;
+}
+
+div.input_params input {
+    float: left;
+    margin: 1px 2px 3px 4px;
+    width: 308px;
+}
+
+label {
+ 	float: left;
+  	margin: 1px 2px 3px 4px;
+}
+

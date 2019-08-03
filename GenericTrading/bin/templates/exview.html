@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="shortcut icon" href="">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}" />
+		<title>EX Client</title>
+	</head>
+	<body>
+		<h1>test</h1>  
+	</body>
+   
+	<div class="main">
+   
+			<div class="ctrls">
+				<form class="ctrls" action="" name="ctrls">
+					<input type="button" name="run" id="run" value="run" />
+					<input type="button" name="stop" id="stop" value="stop" />
+				</form>
+			</div>
+			
+			<div class="console">
+			
+			</div>
+	</div>
+   
+   <div>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+		<script src="{{url_for('static', filename='jquery.js')}}"></script>
+		<script src="{{url_for('static', filename='client.js')}}"></script>
+	</div>
+</html>
